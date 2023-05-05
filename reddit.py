@@ -58,15 +58,22 @@ os.makedirs(os.path.join('recordings', folder_name))
 print("Saving to folder: {}".format(folder_name))
 
 # Generate the text-to-speech audio
-text = post.title + '\n' + post.selftext.replace('\n', ' ').replace('\r', '')
+text = post.title + '.' + post.selftext.replace('\n', ' ')
 text_with_breaks = ''
 for char in text:
     text_with_breaks += char + ("\n" if char in ['.', '?', ',', '!'] else "")
+lastword = text_with_breaks[0]
+fainal_text = ""
+for char in text_with_breaks:
+    if not (lastword == "\n" and char == " "):
+        fainal_text += char
+    lastword = char
+
 with open(os.path.join('recordings', folder_name, 'script.txt'), 'w', encoding='utf-8') as f:
-    f.write(text_with_breaks)
-print("Generating audio for text: {}".format(text_with_breaks))
-engine.save_to_file(text_with_breaks, os.path.join(
-    'recordings', folder_name, 'audio.mp3'))
+    f.write(fainal_text)
+print("Generating audio for text: {}".format(fainal_text))
+engine.save_to_file(fainal_text, os.path.join(
+    'recordings', folder_name, 'audio.wav'))
 
 engine.runAndWait()
 

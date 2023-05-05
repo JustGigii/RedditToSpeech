@@ -47,7 +47,7 @@ def generate_new_video(folder_path):
                 text, duration = subtitle[i]
                 if (text != " "):
                     clips.append(mp.TextClip(
-                        text, fontsize=55, color='yellow', font='Tahoma', stroke_width=24, kerning=-2, interline=-1, size=(target_width, target_height), method='caption').set_start(i).set_duration(duration))
+                        text, fontsize=55, color='yellow', font='Tahoma', stroke_width=30, kerning=-2, interline=-1, size=(target_width, target_height), method='caption').set_start(i).set_duration(duration))
 
             # text_clip = mp.CompositeVideoClip([mp.TextClip(word_at(t), fontsize=50, color='white', bg_color='black', font='Arial')
             #                                    .resize((target_width, target_height))
@@ -57,7 +57,8 @@ def generate_new_video(folder_path):
             new_video_clip = mp.CompositeVideoClip([new_video_clip, text_clip])
 
         # Write new video file
-        new_video_clip.write_videofile(output_path)
+        new_video_clip.write_videofile(
+            output_path, threads=8, fps=24, preset='ultrafast')
 
         # Close clips
         video_clip.close()
