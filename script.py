@@ -2,11 +2,11 @@ import re
 from pydub import AudioSegment
 from pydub.silence import *
 
-rate = 220
-with open(
-    r"C:\Users\try\Desktop\proj\recordings\The_Story_of_The_Amba\script.txt", "r"
-) as f:
-    script = f.read()
+# rate = 220
+# with open(
+#     r"C:\Users\try\Desktop\proj\recordings\The_Story_of_The_Amba\script.txt", "r"
+# ) as f:
+#     script = f.read()
 AudioSegment.ffmpeg = "C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\ffmpeg.exe"
 AudioSegment.converter = "C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\ffmpeg.exe"
 

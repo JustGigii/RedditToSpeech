@@ -2,6 +2,8 @@ import os
 import moviepy.editor as mp
 from moviepy.config import change_settings
 import script as sub
+import loadgameplay
+import reddit
 
 change_settings(
     {"IMAGEMAGICK_BINARY": r"C:\Program Files\ImageMagick-7.1.1-Q16-HDRI\magick.exe"}
@@ -10,24 +12,33 @@ change_settings(
 # function to generate new video using moviepy
 
 
-def generate_new_video(folder_path):
+def generate_new_video(folder_path, backgroundvideo, name):
     # Set up paths to input and output files
-    video_path = os.path.join("fullvideo.mp4")
+    video_path = backgroundvideo["path"]
     audio_path = os.path.join(folder_path, "audio.wav")
     script_path = os.path.join(folder_path, "script.txt")
-    output_path = os.path.join(folder_path, "new_video.mp4")
+    output_path = os.path.join(folder_path, name + ".mp4")
 
-    # Check if video file exists
+    if os.path.exists(output_path):
+        return 0
     if os.path.exists(video_path):
+        # Check if video file exists
         # Load video and audio files
         video_clip = mp.VideoFileClip(video_path)
         audio_clip = mp.AudioFileClip(audio_path)
 
         # Get audio duration
         audio_duration = audio_clip.duration
-
+        start_clip, end_clip = (
+            backgroundvideo["currentTime"],
+            backgroundvideo["currentTime"] + audio_duration,
+        )
+        if end_clip > video_clip.duration:
+            backgroundvideo["isfhnish"] = True
+            return -1
+        backgroundvideo["currentTime"] = end_clip
         # Trim video clip to audio duration
-        new_video_clip = video_clip.subclip(0, audio_duration)
+        new_video_clip = video_clip.subclip(start_clip, end_clip)
 
         # Add audio and text
         new_video_clip = new_video_clip.set_audio(audio_clip)
@@ -86,12 +97,31 @@ def generate_new_video(folder_path):
         audio_clip.close()
     else:
         print(f"Video file {video_path} not found.")
+    return 0
+
+
+def handelervideo(trying):
+    if trying == 0:
+        raise "some erro in the code pls cheak the json"
+    index = loadgameplay.loadvideo(backgroundvideos)
+    if index != -1:
+        status = generate_new_video(dir_path, backgroundvideos[index], dir)
+        if status == -1:
+            handelervideo(trying - 1)
+        else:
+            return 0
+    raise "pls add more video"
 
 
 # main program
 if __name__ == "__main__":
+    for i in range(9):
+        reddit.loadstories()
+    backgroundvideos = loadgameplay.InitJson()
     recordings_dir = "recordings"
+    json_data = []
     for subdir, dirs, files in os.walk(recordings_dir):
         for dir in dirs:
             dir_path = os.path.join(subdir, dir)
-            generate_new_video(dir_path)
+            handelervideo(3)
+    loadgameplay.updatefile(backgroundvideos)
