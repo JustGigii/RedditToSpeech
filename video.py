@@ -1,4 +1,5 @@
 import os
+import shutil
 import moviepy.editor as mp
 from moviepy.config import change_settings
 import script as sub
@@ -54,7 +55,7 @@ def generate_new_video(folder_path, backgroundvideo, name):
         new_video_clip = new_video_clip.resize((target_width, target_height))
 
         # Add text
-        with open(script_path, "r") as f:
+        with open(script_path, "r", encoding="utf8") as f:
             script = f.read()
             subtitle = sub.subtitle(script, audio_path)
             clips = []
@@ -97,6 +98,7 @@ def generate_new_video(folder_path, backgroundvideo, name):
         audio_clip.close()
     else:
         print(f"Video file {video_path} not found.")
+    shutil.copy(output_path, "done")
     return 0
 
 
@@ -115,8 +117,8 @@ def handelervideo(trying):
 
 # main program
 if __name__ == "__main__":
-    for i in range(9):
-        reddit.loadstories()
+    # for i in range(9):
+    #     reddit.loadstories()
     backgroundvideos = loadgameplay.InitJson()
     recordings_dir = "recordings"
     json_data = []
